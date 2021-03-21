@@ -2,6 +2,8 @@ require('dotenv').config();
 const API_URL = process.env.API_URL;
 const PUBLIC_KEY = process.env.PUBLIC_KEY;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const prompt = require('prompt');
+
 
 const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(API_URL);
@@ -38,4 +40,15 @@ async function mintNFT(tokenURI) {
   });
 }
 
-mintNFT("https://gateway.pinata.cloud/ipfs/QmUfQ1ncqrDjFJhchSFhZqRrCmoFBv2k5Jq68n8BtyD3QN");
+
+prompt.start();
+
+prompt.get(['tokenURI'], function (err, result) {
+  if (err) { return onErr(err); }
+  mintNFT(result.tokenURI)
+});
+
+function onErr(err) {
+  console.log(err);
+  return 1;
+}
