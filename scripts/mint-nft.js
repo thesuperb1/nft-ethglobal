@@ -12,7 +12,7 @@ const contract = require("../artifacts/contracts/MyBeeple.sol/MyBeeple.json");
 const contractAddress = "0x640e6c7BDBf22e2987F2FF8A5E4F068Eb83E2BcD";
 const nftContract = new web3.eth.Contract(contract.abi, contractAddress);
 
-async function mintNFT(tokenURI) {
+async function mintNFT(tokenURI, recipientAddress) {
   const nonce = await web3.eth.getTransactionCount(PUBLIC_KEY, 'latest'); //get latest nonce
 
   //the transaction
@@ -21,7 +21,7 @@ async function mintNFT(tokenURI) {
     'to': contractAddress,
     'nonce': nonce,
     'gas': 500000,
-    'data': nftContract.methods.mintNFT(PUBLIC_KEY, tokenURI).encodeABI()
+    'data': nftContract.methods.mintNFT(recipientAddress, tokenURI).encodeABI()
   };
 
 
@@ -43,12 +43,14 @@ async function mintNFT(tokenURI) {
 
 prompt.start();
 
-prompt.get(['tokenURI'], function (err, result) {
+prompt.get(['tokenURI', 'recipientAddress'], function (err, result) {
   if (err) { return onErr(err); }
-  mintNFT(result.tokenURI)
+  mintNFT(result.tokenURI, result.recipientAddress)
 });
 
 function onErr(err) {
   console.log(err);
   return 1;
 }
+
+
